@@ -13,22 +13,22 @@ public class chirpinfo implements WurmServerMod, PlayerMessageListener, PlayerLo
 
 	@Override
 	public boolean onPlayerMessage(Communicator communicator, String message) {
-		if(message != null &&  (message.startsWith("/nextchirp")) || message.startsWith("/chirp") ) {
-			communicator.sendNormalServerMessage("Next farming chirp in " + getNextChirpTime() + ".");
-			return true;
+		if(message != null) {
+			if (message.startsWith("/chirp") || message.startsWith("/nextchirp") || message.equals("/nextcrop")) {
+				communicator.sendNormalServerMessage(getNextChirpTime());
+				return true;
+			}
 		}
 		return false;
 	}
 
 	@Override
 	public void onPlayerLogin(Player player) {
-		player.getCommunicator().sendSafeServerMessage("Next farming chirp in " + getNextChirpTime() + ".");
-		player.getCommunicator().sendSafeServerMessage("  Type /nextchirp or /chirp for updates.");
+		player.getCommunicator().sendSafeServerMessage(getNextChirpTime());
+		player.getCommunicator().sendSafeServerMessage("  Type /nextchirp or /nextcrop for update.");
 	}
 	
 	public static String getNextChirpTime() {
-		String time = "about ";
-
 		long fieldGrowthTime = Servers.localServer.getFieldGrowthTime();		
 		long currentTime = System.currentTimeMillis();
 		long startTime = Server.getStartTime();
@@ -39,14 +39,7 @@ public class chirpinfo implements WurmServerMod, PlayerMessageListener, PlayerLo
 		}
 
 		long nextChirp = chirpTime - currentTime;
-
-		if(nextChirp > 0) {
-			time += Server.getTimeFor(nextChirp);
-		}
-		else {
-			time += "ERROR 0";
-		}
 		
-		return time;
+		return "Crops will need tending in about " + Server.getTimeFor(nextChirp) + ".";			
 	}
 }
